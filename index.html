@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Booking</title>
+    <style>
+        /* Style for the rooms */
+        .room {
+            width: 100px;
+            height: 100px;
+            background-color: #bdc3c7;
+            border: 1px solid #34495e;
+            margin: 10px;
+            display: inline-block;
+            cursor: pointer;
+            text-align: center;
+            line-height: 100px;
+        }
+        .selected {
+            background-color: #2ecc71;
+        }
+        .occupied {
+            background-color: #e74c3c;
+            cursor: not-allowed;
+        }
+        #details {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Room Booking</h1>
+    <h2>Available Rooms</h2>
+    <div id="rooms">
+        <!-- Generate rooms dynamically using JavaScript -->
+    </div>
+    <div id="details">
+        <h2>Room Details</h2>
+        <p id="roomDetails">Select a room to see details.</p>
+    </div>
+    <p>Select your room:</p>
+    <button onclick="bookRoom()">Book Room</button>
+
+    <script>
+        // Define room statuses and details
+        const rooms = [
+            { id: 1, status: 'available', details: 'Capacity: 2 persons, Price: $50/night' },
+            { id: 2, status: 'available', details: 'Capacity: 4 persons, Price: $80/night' },
+            { id: 3, status: 'available', details: 'Capacity: 3 persons, Price: $60/night' },
+            { id: 4, status: 'available', details: 'Capacity: 1 person, Price: $40/night' },
+            { id: 5, status: 'available', details: 'Capacity: 2 persons, Price: $55/night' },
+            { id: 6, status: 'available', details: 'Capacity: 3 persons, Price: $65/night' },
+        ];
+
+        // Function to render rooms
+        function renderRooms() {
+            const roomsContainer = document.getElementById('rooms');
+            roomsContainer.innerHTML = '';
+
+            rooms.forEach(room => {
+                const roomElement = document.createElement('div');
+                roomElement.classList.add('room');
+                roomElement.textContent = room.id;
+
+                if (room.status === 'occupied') {
+                    roomElement.classList.add('occupied');
+                    roomElement.disabled = true;
+                } else if (room.status === 'selected') {
+                    roomElement.classList.add('selected');
+                }
+
+                roomElement.addEventListener('click', () => {
+                    showRoomDetails(room);
+                    if (room.status === 'available') {
+                        room.status = 'selected';
+                    } else if (room.status === 'selected') {
+                        room.status = 'available';
+                    }
+                    renderRooms();
+                });
+
+                roomsContainer.appendChild(roomElement);
+            });
+        }
+
+        // Function to show room details
+        function showRoomDetails(room) {
+            const roomDetailsElement = document.getElementById('roomDetails');
+            roomDetailsElement.textContent = room.details;
+        }
+
+        // Function to book selected room
+        function bookRoom() {
+            const selectedRoom = rooms.find(room => room.status === 'selected');
+            if (selectedRoom) {
+                // Send selectedRoom to the server for booking process
+                console.log('Selected Room:', selectedRoom);
+                alert('Room booked successfully!');
+                // Reset selected room
+                selectedRoom.status = 'occupied';
+                renderRooms();
+            } else {
+                alert('Please select a room.');
+            }
+        }
+
+        // Initial rendering of rooms
+        renderRooms();
+    </script>
+</body>
+</html>
